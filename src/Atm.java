@@ -40,7 +40,7 @@ class BankAccount {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             String formatDate = date.format(formatter);
 
-            fileWrite.write(account+" "+Integer.toString(balance)+" "+formatDate+" withdraw "+Integer.toString(amount));
+            fileWrite.write(account+" "+Integer.toString(balance)+" "+formatDate+" withdraw "+Integer.toString(amount)+"\n");
             fileWrite.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -56,7 +56,7 @@ class BankAccount {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             String formatDate = date.format(formatter);
 
-            fileWrite.write(account+" "+Integer.toString(balance)+" "+formatDate+" deposit "+Integer.toString(amount));
+            fileWrite.write(account+" "+Integer.toString(balance)+" "+formatDate+" deposit "+Integer.toString(amount)+"\n");
             fileWrite.close();
         } catch (IOException e) {
             e.printStackTrace();

@@ -134,7 +134,7 @@ class WithdrawPasswordPage extends JFrame {
 }
 
 class DepositPage extends JFrame {
-    private JTextField depositMoney = new JTextField(15);
+    private JTextField depositAmount = new JTextField(20);
     private JButton submitButton = new JButton("submit");
     protected BankAccount bankAccount;
 
@@ -146,24 +146,24 @@ class DepositPage extends JFrame {
         Container c = getContentPane();
         c.setLayout(new FlowLayout());
 
-        c.add(new JLabel("Please put in cash or check"));
-        c.add(depositMoney);
+        c.add(new JLabel("Please put cash"));
+        c.add(depositAmount);
 
         submitButton.addActionListener(new SubmitButtonActionListener());
         c.add(submitButton);
 
-        setSize(300, 250);
+        setSize(300, 300);
         setVisible(true);
     }
 
     private class SubmitButtonActionListener implements ActionListener {
         @Override
         public synchronized void actionPerformed(ActionEvent e) {
-            String depositMoneyData = depositMoney.getText();
+            String depositMoneyData = depositAmount.getText();
             try {//3초 기다림
                 Thread.sleep(3000);
-            } catch (InterruptedException e1) {
-                e1.printStackTrace();
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
             }
             bankAccount.deposit(Integer.parseInt(depositMoneyData));
 

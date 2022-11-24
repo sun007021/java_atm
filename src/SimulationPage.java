@@ -9,7 +9,6 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 public class SimulationPage extends JFrame {
-    private JLabel doing = new JLabel();
     private JButton exitBtn = new JButton("EXIT");
     TextArea ta = new TextArea();
     public SimulationPage() {

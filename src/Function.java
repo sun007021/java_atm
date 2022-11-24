@@ -25,7 +25,7 @@ class BalancePage extends JFrame {
         c.add(money);
         exitBtn.addActionListener(new ExitActionListener());
         c.add(exitBtn);
-        setSize(150, 100);
+        setSize(200, 150);
         setVisible(true);
     }
 
@@ -54,14 +54,14 @@ class WithdrawPage extends JFrame {
         c.add(new JLabel("withdraw Amount "));
         c.add(withdrawMoney);
 
-        submitButton.addActionListener(new EnterButtonActionListener());
+        submitButton.addActionListener(new SubmitButtonActionListener());
         c.add(submitButton);
 
-        setSize(300, 250);
+        setSize(300, 300);
         setVisible(true);
     }
 
-    private class EnterButtonActionListener implements ActionListener {
+    private class SubmitButtonActionListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             String withdrawMoneyData = withdrawMoney.getText();
