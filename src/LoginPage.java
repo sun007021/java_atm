@@ -31,7 +31,7 @@ public class LoginPage extends JFrame {
             String passwordData = password.getText();
 
             if(Bank.login(bankAccountData, passwordData)){// login 성공시
-                new AfterLoginPage();
+                new AfterLoginPage(Bank.findAccount(bankAccountData));
                 setVisible(false);
             }
             else{
@@ -45,8 +45,9 @@ class AfterLoginPage extends JFrame {
     private JButton balanceButton = new JButton("Balance");
     private JButton withdrawButton = new JButton("Withdraw");
     private JButton depositButton = new JButton("Deposit");
-
-    public AfterLoginPage() {
+    protected BankAccount bankAccount;
+    public AfterLoginPage(BankAccount bankAccount) {
+        this.bankAccount = bankAccount;
         setTitle("ATM");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -68,16 +69,14 @@ class AfterLoginPage extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            //잔액 불러오는 기능 사용
-            //10000자리에 잔액 넣으면 됨(파일에서 불러와서)
-            new BalancePage("10000");
+            new BalancePage(bankAccount.getBalance());
         }
     }
     private class WithdrawButtonActionListener implements ActionListener{
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            new BeforeWithdrawPage();
+            new BeforeWithdrawPage(bankAccount);
             setVisible(false);
         }
     }
@@ -93,8 +92,10 @@ class AfterLoginPage extends JFrame {
  class BeforeWithdrawPage extends JFrame {
     private JTextField password = new JTextField(20);
     private JButton enterButton = new JButton("확인");
-    public BeforeWithdrawPage() {
-        setTitle("타이틀.. 수정ㄱㄱ");
+    protected BankAccount bankAccount;
+    public BeforeWithdrawPage(BankAccount bankAccount) {
+        this.bankAccount = bankAccount;
+        setTitle("ATM 출금");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         Container c = getContentPane();
@@ -114,11 +115,13 @@ class AfterLoginPage extends JFrame {
         public void actionPerformed(ActionEvent e) {
             String passwordData = password.getText();
 
-            //AfterLoginPage에 저장된 비번과 일치하면 아래 코드 실행
-            new WithdrawPage();
-            setVisible(false);
-            //틀릴 경우
-            //위 두줄은 실행 X, 오류메시지 띄우기
+            if(bankAccount.isCorrectPassword(passwordData)){
+                new WithdrawPage(bankAccount);
+                setVisible(false);
+            }
+            else{
+                JOptionPane.showMessageDialog(null, "비밀번호가 일치하지 않습니다", "Message",JOptionPane.ERROR_MESSAGE );
+            }
         }
     }
 
@@ -154,10 +157,10 @@ class DepositPage extends JFrame {
         public synchronized void actionPerformed(ActionEvent e) {
             String withdrawMoneyData = depositMoney.getText();
 
-            //출금하는 기능 사용
+            //입금하는 기능 사용
 
             //잔액이 부족할 경우 아래 주석처리 코드까지 실행
-            new AfterLoginPage();
+            //new AfterLoginPage();
             setVisible(false);
         }
     }

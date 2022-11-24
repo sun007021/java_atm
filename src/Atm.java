@@ -1,7 +1,11 @@
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +22,48 @@ class BankAccount {
 
     Boolean isCorrectPassword(String password){// 비밀번호 맞게 입력했는지 확인
         return (this.password.equals(password));
+    }
+
+    Boolean checkBalanceIsEnough(int amount){
+        if(balance>=amount){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    void withDraw(int amount){
+        balance-=amount;// 출금
+        try{// transactions 기록
+            FileWriter fw = new FileWriter(new File("C:\\Temp\\transactions.txt"), true);
+            FileWriter fileWrite=new FileWriter("C:\\Temp\\transactions.txt",true);
+            // 계좌번호
+            fileWrite.write("\n"); //버퍼에 개행 삽입
+            fileWrite.write(account);
+
+            // 현재 잔고
+            fileWrite.write(" ");
+            fileWrite.write(Integer.toString(balance));
+
+            // 거래날짜
+            fileWrite.write(" ");
+            LocalDate date = LocalDate.now();
+            DateTimeFormatter formatter=DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            String formatedNow = date.format(formatter);
+            fileWrite.write(formatedNow);
+
+            // 거래내역
+            fileWrite.write(" ");
+            fileWrite.write("withdraw");
+
+            // 거래금액
+            fileWrite.write(" ");
+            fileWrite.write(Integer.toString(amount));
+            fileWrite.close();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
     public String getAccount() {
@@ -79,7 +125,7 @@ class Bank {
 public class Atm {
     public static void main(String[] args) {
         try {
-            BufferedReader readBankAccount = new BufferedReader(new FileReader("c:\\Temp\\bankaccount.txt"));
+            BufferedReader readBankAccount = new BufferedReader(new FileReader("C:\\Temp\\bankaccount.txt"));
             Bank bank = new Bank();
             bank.setAccountList(readBankAccount);
             new MainPage();

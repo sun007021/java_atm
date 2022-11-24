@@ -5,20 +5,21 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 public class Function {
 }
 class BalancePage extends JFrame {
     private JLabel money = new JLabel();
-    public BalancePage(String myMoney) {
-        setTitle("타이틀.. 수정ㄱㄱ");
+    public BalancePage(int myMoney) {
+        setTitle("ATM 잔액조회");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         Container c = getContentPane();
         c.setLayout(new FlowLayout());
 
-        money.setText(myMoney);
+        money.setText(Integer.toString(myMoney));
         c.add(money);
 
         setSize(150,100);
@@ -30,8 +31,10 @@ class WithdrawPage extends JFrame {
 
     private JTextField withdrawMoney = new JTextField(20);
     private JButton enterButton = new JButton("확인");
-    public WithdrawPage() {
-        setTitle("타이틀.. 수정ㄱㄱ");
+    protected BankAccount bankAccount;
+    public WithdrawPage(BankAccount bankAccount) {
+        this.bankAccount = bankAccount;
+        setTitle("출금");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         Container c = getContentPane();
@@ -51,17 +54,16 @@ class WithdrawPage extends JFrame {
         public void actionPerformed(ActionEvent e) {
             String withdrawMoneyData = withdrawMoney.getText();
 
-            //출금하는 기능 사용
-
-            //잔액이 부족할 경우 아래 주석처리 코드까지 실행
-            //new withdrawError();
-            new AfterLoginPage();
-            setVisible(false);
+            if(bankAccount.checkBalanceIsEnough(Integer.parseInt(withdrawMoneyData))){//잔액이 출금하려는 금액보다 큰지 확인
+                bankAccount.withDraw(Integer.parseInt(withdrawMoneyData));
+                new AfterLoginPage(bankAccount);
+            }
+            else{
+                JOptionPane.showMessageDialog(null, "잔액이 부족합니다", "Message",JOptionPane.ERROR_MESSAGE );
+                new AfterLoginPage(bankAccount);
+                setVisible(false);
+            }
 
         }
-    }
-
-    public static void main(String[] args) {
-        new WithdrawPage();
     }
 }
