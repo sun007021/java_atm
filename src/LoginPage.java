@@ -5,7 +5,8 @@ import javax.swing.*;
 public class LoginPage extends JFrame {
     private JTextField bankAccount = new JTextField(20);
     private JTextField password = new JTextField(20);
-    private JButton enterButton = new JButton("확인");
+    private JButton submitButton = new JButton("submit");
+
     public LoginPage() {
         setTitle("ATM Login");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -13,46 +14,47 @@ public class LoginPage extends JFrame {
         Container c = getContentPane();
         c.setLayout(new FlowLayout());
 
-        c.add(new JLabel("bank account "));
+        c.add(new JLabel("Account "));
         c.add(bankAccount);
         c.add(new JLabel("password "));
         c.add(password);
 
-        enterButton.addActionListener(new EnterButtonActionListener());
-        c.add(enterButton);
+        submitButton.addActionListener(new SubmitButtonActionListener());
+        c.add(submitButton);
 
-        setSize(300,250);
+        setSize(300, 300);
         setVisible(true);
     }
-    private class EnterButtonActionListener implements ActionListener{
+
+    private class SubmitButtonActionListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             String bankAccountData = bankAccount.getText();
             String passwordData = password.getText();
 
-            if(Bank.login(bankAccountData, passwordData)){// login 성공시
-                new AfterLoginPage(Bank.findAccount(bankAccountData));
+            if (Bank.login(bankAccountData, passwordData)) {// login 성공시
+                new LoginedPage(Bank.findAccount(bankAccountData));
                 setVisible(false);
-            }
-            else{
-                JOptionPane.showMessageDialog(null, "로그인에 실패하였습니다", "Message",JOptionPane.ERROR_MESSAGE );
+            } else {
+                JOptionPane.showMessageDialog(null, "Login Failed", "Message", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
 }
 
-class AfterLoginPage extends JFrame {
+class LoginedPage extends JFrame {
     private JButton balanceButton = new JButton("Balance");
     private JButton withdrawButton = new JButton("Withdraw");
     private JButton depositButton = new JButton("Deposit");
     protected BankAccount bankAccount;
-    public AfterLoginPage(BankAccount bankAccount) {
+
+    public LoginedPage(BankAccount bankAccount) {
         this.bankAccount = bankAccount;
         setTitle("ATM");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         Container c = getContentPane();
-        c.setLayout(new FlowLayout(FlowLayout.CENTER,10,80));
+        c.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 80));
 
         balanceButton.addActionListener(new BalanceButtonActionListener());
         withdrawButton.addActionListener(new WithdrawButtonActionListener());
@@ -62,40 +64,45 @@ class AfterLoginPage extends JFrame {
         c.add(withdrawButton);
         c.add(depositButton);
 
-        setSize(300,250);
+        setSize(300, 300);
         setVisible(true);
     }
-    private class BalanceButtonActionListener implements ActionListener{
+
+    private class BalanceButtonActionListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
             new BalancePage(bankAccount.getBalance());
         }
     }
-    private class WithdrawButtonActionListener implements ActionListener{
+
+    private class WithdrawButtonActionListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            new BeforeWithdrawPage(bankAccount);
+            new WithdrawPasswordPage(bankAccount);
             setVisible(false);
         }
     }
-    private class DepositButtonActionListener implements ActionListener{
+
+    private class DepositButtonActionListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            new DepositPage();
+            new DepositPage(bankAccount);
             setVisible(false);
         }
     }
 }
- class BeforeWithdrawPage extends JFrame {
+
+class WithdrawPasswordPage extends JFrame {
     private JTextField password = new JTextField(20);
-    private JButton enterButton = new JButton("확인");
+    private JButton submitButton = new JButton("submit");
     protected BankAccount bankAccount;
-    public BeforeWithdrawPage(BankAccount bankAccount) {
+
+    public WithdrawPasswordPage(BankAccount bankAccount) {
         this.bankAccount = bankAccount;
-        setTitle("ATM 출금");
+        setTitle("Password");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         Container c = getContentPane();
@@ -104,40 +111,36 @@ class AfterLoginPage extends JFrame {
         c.add(new JLabel("password "));
         c.add(password);
 
-        enterButton.addActionListener(new EnterButtonActionListener());
-        c.add(enterButton);
+        submitButton.addActionListener(new SubmitButtonActionListener());
+        c.add(submitButton);
 
-        setSize(300,250);
+        setSize(300, 300);
         setVisible(true);
     }
-    private class EnterButtonActionListener implements ActionListener{
+
+    private class SubmitButtonActionListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             String passwordData = password.getText();
 
-            if(bankAccount.isCorrectPassword(passwordData)){
+            if (bankAccount.isCorrectPassword(passwordData)) {
                 new WithdrawPage(bankAccount);
                 setVisible(false);
-            }
-            else{
-                JOptionPane.showMessageDialog(null, "비밀번호가 일치하지 않습니다", "Message",JOptionPane.ERROR_MESSAGE );
+            } else {
+                JOptionPane.showMessageDialog(null, "Wrong password", "Message", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
-
-    public static void main(String[] args) {
-        // TODO Auto-generated method stub
-
-    }
-
 }
 
 class DepositPage extends JFrame {
     private JTextField depositMoney = new JTextField(15);
-    private JButton enterButton = new JButton("확인");
+    private JButton submitButton = new JButton("submit");
+    protected BankAccount bankAccount;
 
-    public DepositPage() {
-        setTitle("타이틀.. 수정ㄱㄱ");
+    public DepositPage(BankAccount bankAccount) {
+        this.bankAccount = bankAccount;
+        setTitle("Deposit");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         Container c = getContentPane();
@@ -146,25 +149,26 @@ class DepositPage extends JFrame {
         c.add(new JLabel("Please put in cash or check"));
         c.add(depositMoney);
 
-        enterButton.addActionListener(new EnterButtonActionListener());
-        c.add(enterButton);
+        submitButton.addActionListener(new SubmitButtonActionListener());
+        c.add(submitButton);
 
-        setSize(300,250);
+        setSize(300, 250);
         setVisible(true);
     }
-    private class EnterButtonActionListener implements ActionListener{
+
+    private class SubmitButtonActionListener implements ActionListener {
         @Override
         public synchronized void actionPerformed(ActionEvent e) {
-            String withdrawMoneyData = depositMoney.getText();
+            String depositMoneyData = depositMoney.getText();
+            try {//3초 기다림
+                Thread.sleep(3000);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+            bankAccount.deposit(Integer.parseInt(depositMoneyData));
 
-            //입금하는 기능 사용
-
-            //잔액이 부족할 경우 아래 주석처리 코드까지 실행
-            //new AfterLoginPage();
+            new LoginedPage(bankAccount);
             setVisible(false);
         }
-    }
-    public static void main(String[] args) {
-        new DepositPage();
     }
 }

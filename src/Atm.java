@@ -12,56 +12,53 @@ import java.util.List;
 class BankAccount {
     private String account;
     private String password;
-    int balance=0; // 계좌 잔액
+    int balance = 0; // 계좌 잔액
 
-    //이부분 알아서 생성자에서 값 받는식 말고 setAccount 함수같은거 만들어서 하든지 변형해도됨
-    BankAccount(String account, String password){ // 객체 생성시 입력
+    BankAccount(String account, String password) { // 객체 생성시 입력
         this.account = account;
         this.password = password;
     }
 
-    Boolean isCorrectPassword(String password){// 비밀번호 맞게 입력했는지 확인
+    Boolean isCorrectPassword(String password) {// 비밀번호 맞게 입력했는지 확인
         return (this.password.equals(password));
     }
 
-    Boolean checkBalanceIsEnough(int amount){
-        if(balance>=amount){
+    Boolean checkBalanceIsEnough(int amount) {
+        if (balance >= amount) {
             return true;
-        }
-        else{
+        } else {
             return false;
         }
     }
 
-    void withDraw(int amount){
-        balance-=amount;// 출금
-        try{// transactions 기록
-            FileWriter fw = new FileWriter(new File("C:\\Temp\\transactions.txt"), true);
-            FileWriter fileWrite=new FileWriter("C:\\Temp\\transactions.txt",true);
-            // 계좌번호
-            fileWrite.write("\n"); //버퍼에 개행 삽입
-            fileWrite.write(account);
-
-            // 현재 잔고
-            fileWrite.write(" ");
-            fileWrite.write(Integer.toString(balance));
-
-            // 거래날짜
-            fileWrite.write(" ");
+    void withDraw(int amount) {
+        balance -= amount;// 출금
+        try {// transactions 기록
+            FileWriter fileWrite = new FileWriter("C:\\Temp\\transactions.txt", true);
+            // 현재날짜
             LocalDate date = LocalDate.now();
-            DateTimeFormatter formatter=DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            String formatedNow = date.format(formatter);
-            fileWrite.write(formatedNow);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            String formatDate = date.format(formatter);
 
-            // 거래내역
-            fileWrite.write(" ");
-            fileWrite.write("withdraw");
-
-            // 거래금액
-            fileWrite.write(" ");
-            fileWrite.write(Integer.toString(amount));
+            fileWrite.write(account+" "+Integer.toString(balance)+" "+formatDate+" withdraw "+Integer.toString(amount));
             fileWrite.close();
-        }catch (IOException e){
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    void deposit(int amount) {// 입금
+        balance=balance+amount;
+        try {// transactions 기록
+            FileWriter fileWrite = new FileWriter("C:\\Temp\\transactions.txt", true);
+            // 현재 날짜
+            LocalDate date = LocalDate.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            String formatDate = date.format(formatter);
+
+            fileWrite.write(account+" "+Integer.toString(balance)+" "+formatDate+" deposit "+Integer.toString(amount));
+            fileWrite.close();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -70,7 +67,7 @@ class BankAccount {
         return account;
     }
 
-    public int getBalance(){
+    public int getBalance() {
         return balance;
     }
 }
@@ -78,7 +75,7 @@ class BankAccount {
 class Bank {
     static List<BankAccount> accountList = new ArrayList<>();
 
-    public static BankAccount findAccount(String account) {
+    public static BankAccount findAccount(String account) {//계좌리스트에서 해당 계좌번호인 계좌 객체 찾아서 반환
         for (int i = 0; i < accountList.size(); i++) {
             if (account.equals(accountList.get(i).getAccount())) {
                 return accountList.get(i);
@@ -134,7 +131,6 @@ public class Atm {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-
 
 
     }

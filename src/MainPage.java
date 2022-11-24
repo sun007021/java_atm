@@ -11,7 +11,7 @@ public class MainPage extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         Container c = getContentPane();
-        c.setLayout(new FlowLayout(FlowLayout.CENTER,30,80));
+        c.setLayout(new FlowLayout(FlowLayout.CENTER,40,80));
 
         loginButton.addActionListener(new LoginButtonActionListener());
         simulationButton.addActionListener(new SimulationButtonActionListener());
@@ -19,7 +19,7 @@ public class MainPage extends JFrame {
         c.add(loginButton);
         c.add(simulationButton);
 
-        setSize(300,250);
+        setSize(300,300);
         setVisible(true);
 
     }
@@ -35,7 +35,7 @@ public class MainPage extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            //  ^^ 알아서 잘 하기~
+            new SimulationPage();
         }
     }
 
